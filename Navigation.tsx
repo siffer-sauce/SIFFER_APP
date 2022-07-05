@@ -5,6 +5,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import Render3D from "./screens/Render3D";
 import Register from "./screens/register/Register";
 const Stack = createStackNavigator();
+
+export type StackParams = {
+  [key: string]: { name: string };
+};
+
 const Navigation = () => {
   return (
     <NavigationContainer>

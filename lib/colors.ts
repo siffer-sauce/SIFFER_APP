@@ -5,7 +5,7 @@ export const colors = {
   blue_primary: "#0137BB",
   blue_secondary: "#475ACF",
   beige: "#FBF4E6",
-  green: "#30955C",
+  green: "#00E300",
   white: "#ffffff",
   gray: "#555A5D",
 };

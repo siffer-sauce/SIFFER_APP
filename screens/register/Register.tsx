@@ -4,36 +4,46 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { colors } from "../../lib/colors";
 import ChatItem from "../../components/ChatItem";
 import ChatItemContainer from "../../components/ChatItemContainer";
-import { AntDesign } from "@expo/vector-icons";
-import HintText from "../../components/HintText";
-import { getStepComponents } from "./steps";
+import {
+  EmailContent,
+  getStepComponents,
+  NicknameContent,
+  PasswordContent,
+  PhoneNumberContent,
+} from "./steps";
 import { RegisterChatType } from "../../types/RegisterChatType";
 import {
   changeChatContent,
   checkIsChatSended,
+  getBlurPasswordString,
 } from "../../functions/chatFunctions";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParams } from "../../Navigation";
+import ChatTextInput from "../../components/ChatTextInput";
 
 const ANIMATION_DURATION = 300;
 
 const Register = () => {
+  const navigation = useNavigation<StackNavigationProp<StackParams>>();
+
   const scrollRef = useRef<ScrollView>(null);
   const [text, setText] = useState("");
   const [step, setStep] = useState(0);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
 
   const [registerChats, setRegisterChats] = useState<Array<RegisterChatType>>([
-    getStepComponents(0),
+    getStepComponents(step),
   ]);
 
   const addChat = (newChat: RegisterChatType, wait?: number) => {
@@ -47,17 +57,46 @@ const Register = () => {
 
   const onTextSubmit = () => {
     if (text.length > 0) {
-      const myResponse: RegisterChatType = { received: false, title: text };
+      let myResponse: RegisterChatType;
+      if (step === 1) {
+        myResponse = { received: false, title: getBlurPasswordString(text) };
+      } else {
+        myResponse = { received: false, title: text };
+      }
       addChat(myResponse);
       if (step === 0) {
         setEmail(text);
       } else if (step === 1) {
         setPassword(text);
+      } else if (step === 2) {
+        setNickname(text);
+      } else if (step === 3) {
+        setPhoneNumber(text);
+      } else if (step === 4) {
+        setVerificationCode(text);
       }
       setText("");
       setStep((prev) => prev + 1);
     }
   };
+
+  useEffect(() => {
+    if (step === 1 && password === "") {
+      setRegisterChats((prev) =>
+        changeChatContent(prev, "password", PasswordContent(1, text))
+      );
+    }
+    if (step === 3) {
+      if (text.length === 4 && text[text.length - 1] !== "-") {
+        const newText = text.slice(0, 3) + "-" + text.slice(3);
+        setText(newText);
+      }
+      if (text.length === 9 && text[text.length - 1] !== "-") {
+        const newText = text.slice(0, 8) + "-" + text.slice(8);
+        setText(newText);
+      }
+    }
+  }, [text]);
 
   useEffect(() => {
     if (!checkIsChatSended(registerChats, step)) {
@@ -68,45 +107,45 @@ const Register = () => {
   useEffect(() => {
     if (email !== "") {
       setRegisterChats((prev) =>
-        changeChatContent(
-          prev,
-          "email",
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 8,
-            }}
-          >
-            <Text style={{ color: colors.blue_secondary, marginRight: 4 }}>
-              이메일 재입력
-            </Text>
-            <AntDesign name="right" size={14} color={colors.blue_secondary} />
-          </TouchableOpacity>
-        )
+        changeChatContent(prev, "email", EmailContent())
       );
     }
     if (password !== "") {
       setRegisterChats((prev) =>
+        changeChatContent(prev, "password", PasswordContent(step, password))
+      );
+    }
+    if (nickname !== "") {
+      setRegisterChats((prev) =>
         changeChatContent(
           prev,
-          "password",
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 8,
-            }}
-          >
-            <Text style={{ color: colors.blue_secondary, marginRight: 4 }}>
-              비밀번호 재입력
-            </Text>
-            <AntDesign name="right" size={14} color={colors.blue_secondary} />
-          </TouchableOpacity>
+          "nickname",
+          NicknameContent(() => {
+            console.log("hi");
+          })
         )
       );
     }
-  }, [email, password]);
+    if (phoneNumber !== "") {
+      setRegisterChats((prev) =>
+        changeChatContent(
+          prev,
+          "phoneNumber",
+          PhoneNumberContent(() => {
+            console.log("hi");
+          })
+        )
+      );
+    }
+    if (verificationCode !== "") {
+      addChat({ title: "씨퍼에 오신 것을 환영합니다.", received: true }, 300);
+      addChat({ title: "감각적인 당신을 기다렸습니다.", received: true }, 600);
+      setTimeout(
+        () => navigation.reset({ routes: [{ name: "Render3D" }] }),
+        1900
+      );
+    }
+  }, [email, password, nickname, phoneNumber, verificationCode]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -132,25 +171,13 @@ const Register = () => {
             );
           })}
         </ScrollView>
-        <View style={styles.footer}>
-          <TextInput
-            autoFocus={true}
-            style={styles.textInput}
-            placeholder="12345678@siffer.com"
-            placeholderTextColor={colors.gray}
-            value={text}
-            onChangeText={setText}
-            onSubmitEditing={onTextSubmit}
-            onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
-          />
-          <TouchableOpacity onPress={onTextSubmit}>
-            <AntDesign
-              name="arrowup"
-              size={24}
-              color={text.length > 0 ? colors.white : colors.gray}
-            />
-          </TouchableOpacity>
-        </View>
+        <ChatTextInput
+          scrollRef={scrollRef}
+          text={text}
+          setText={setText}
+          onTextSubmit={onTextSubmit}
+          step={step}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -162,21 +189,5 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.black,
     flex: 1,
-  },
-  footer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginTop: 24,
-    paddingHorizontal: 16,
-    bottom: 16,
-  },
-  textInput: {
-    height: 40,
-    flex: 1,
-    padding: 10,
-    marginRight: 15,
-    color: colors.white,
-    fontSize: 18,
   },
 });

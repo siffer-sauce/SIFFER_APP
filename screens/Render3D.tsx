@@ -9,14 +9,31 @@ import {
   Scene,
 } from "three";
 import { Renderer } from "expo-three";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { StackParams } from "../Navigation";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { colors } from "../lib/colors";
 
 const Render3D = () => {
+  const navigation = useNavigation<NavigationProp<StackParams>>();
   return (
     <SafeAreaView>
       <GLView
         style={{ width: 500, height: 500 }}
         onContextCreate={onContextCreate}
       />
+      <TouchableOpacity
+        style={{
+          width: 200,
+          height: 200,
+          backgroundColor: colors.blue_secondary,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={() => navigation.reset({ routes: [{ name: "Register" }] })}
+      >
+        <Text style={{ fontSize: 24 }}>처음부터 다시 하기</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
