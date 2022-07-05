@@ -3,4 +3,6 @@ export type RegisterChatType = {
   title?: string;
   content?: JSX.Element;
   name?: string;
+  step?: number;
+  loading?: boolean;
 };

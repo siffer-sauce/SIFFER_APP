@@ -15,6 +15,17 @@ export const changeChatContent = (
   );
 };
 
+export const setChatLoading = (chats: Array<RegisterChatType>, key: string) => {
+  return chats.map((chat) =>
+    chat.name === key
+      ? {
+          ...chat,
+          loading: true,
+        }
+      : chat
+  );
+};
+
 export const checkIsChatSended = (
   chats: Array<RegisterChatType>,
   stepNumber: number

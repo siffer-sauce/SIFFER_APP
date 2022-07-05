@@ -12,6 +12,7 @@ import ChatItemContainer from "../../components/ChatItemContainer";
 import {
   EmailContent,
   getStepComponents,
+  LoadingContent,
   NicknameContent,
   PasswordContent,
   PhoneNumberContent,
@@ -21,6 +22,7 @@ import {
   changeChatContent,
   checkIsChatSended,
   getBlurPasswordString,
+  setChatLoading,
 } from "../../functions/chatFunctions";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -35,6 +37,7 @@ const Register = () => {
   const scrollRef = useRef<ScrollView>(null);
   const [text, setText] = useState("");
   const [step, setStep] = useState(0);
+  const [modifyStep, setModifyStep] = useState("none");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,25 +60,34 @@ const Register = () => {
 
   const onTextSubmit = () => {
     if (text.length > 0) {
-      let myResponse: RegisterChatType;
-      if (step === 1) {
-        myResponse = { received: false, title: getBlurPasswordString(text) };
-      } else {
-        myResponse = { received: false, title: text };
-      }
-      addChat(myResponse);
+      let myResponse: RegisterChatType = { received: false };
+      let title = "";
+      let name = "";
+
       if (step === 0) {
+        title = text;
+        name = "emailResponse";
         setEmail(text);
       } else if (step === 1) {
+        title = getBlurPasswordString(text);
+        name = "passwordResponse";
         setPassword(text);
       } else if (step === 2) {
+        title = text;
+        name = "nicknameResponse";
         setNickname(text);
       } else if (step === 3) {
+        title = text;
+        name = "phoneNumberResponse";
         setPhoneNumber(text);
       } else if (step === 4) {
+        title = text;
+        name = "verificationCodeResponse";
         setVerificationCode(text);
       }
+      myResponse = { ...myResponse, title, name };
       setText("");
+      addChat(myResponse);
       setStep((prev) => prev + 1);
     }
   };
@@ -99,6 +111,12 @@ const Register = () => {
   }, [text]);
 
   useEffect(() => {
+    if (modifyStep !== "none") {
+      setRegisterChats((prev) => setChatLoading(prev, modifyStep));
+    }
+  }, [modifyStep]);
+
+  useEffect(() => {
     if (!checkIsChatSended(registerChats, step)) {
       addChat(getStepComponents(step), ANIMATION_DURATION);
     }
@@ -107,7 +125,14 @@ const Register = () => {
   useEffect(() => {
     if (email !== "") {
       setRegisterChats((prev) =>
-        changeChatContent(prev, "email", EmailContent())
+        changeChatContent(
+          prev,
+          "email",
+          EmailContent(() => {
+            setEmail("");
+            setModifyStep("emailResponse");
+          })
+        )
       );
     }
     if (password !== "") {
@@ -166,6 +191,7 @@ const Register = () => {
                   title={chat.title}
                   content={chat.content}
                   received={chat.received}
+                  loading={chat.loading}
                 />
               </ChatItemContainer>
             );

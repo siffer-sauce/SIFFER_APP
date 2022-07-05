@@ -1,8 +1,15 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Easing,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { colors } from "../../lib/colors";
 import { RegisterChatType } from "../../types/RegisterChatType";
 import { AntDesign } from "@expo/vector-icons";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 export const getStepComponents = (stepNumber: number): RegisterChatType => {
   switch (stepNumber) {
@@ -78,7 +85,7 @@ type ContentProps = {
   onPress: () => void;
 };
 
-export const EmailContent = () => {
+export const EmailContent = (onPress: () => void) => {
   return (
     <TouchableOpacity
       style={{
@@ -86,6 +93,7 @@ export const EmailContent = () => {
         alignItems: "center",
         marginTop: 8,
       }}
+      onPress={onPress}
     >
       <Text style={{ color: colors.blue_secondary, marginRight: 4 }}>
         이메일 재입력
@@ -248,3 +256,38 @@ export const VerificationCodeContent: FC<ContentProps> = ({ onPress }) => {
     </View>
   );
 };
+
+export const LoadingContent = () => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = Animated.timing(animatedValue, {
+    toValue: 1,
+    duration: 250,
+    useNativeDriver: false,
+    easing: Easing.bounce,
+  });
+  useEffect(() => {
+    Animated.loop(fadeIn, { iterations: -1 });
+  }, []);
+  return (
+    <View style={styles.container}>
+      <Animated.Text
+        style={[{ color: colors.black }, { fontSize: animatedValue }]}
+      >
+        ⦁
+      </Animated.Text>
+      <Animated.Text>⦁</Animated.Text>
+      <Animated.Text>⦁</Animated.Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.blue_secondary,
+    paddingHorizontal: 32,
+    paddingVertical: 22,
+    borderRadius: 16,
+    flexDirection: "row",
+  },
+});

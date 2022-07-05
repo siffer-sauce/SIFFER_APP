@@ -1,14 +1,16 @@
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 import React, { FC, useEffect, useRef } from "react";
 import { colors } from "../lib/colors";
+import { LoadingContent } from "../screens/register/steps";
 
 type ChatItemProps = {
   title?: string;
   received: boolean;
   content?: JSX.Element;
+  loading?: boolean;
 };
 
-const ChatItem: FC<ChatItemProps> = ({ title, received, content }) => {
+const ChatItem: FC<ChatItemProps> = ({ title, received, content, loading }) => {
   const fadeOpacity = useRef(new Animated.Value(0)).current;
   const fadeBottom = useRef(new Animated.Value(-20)).current;
 
@@ -32,32 +34,46 @@ const ChatItem: FC<ChatItemProps> = ({ title, received, content }) => {
     fadeIn();
   }, []);
   return (
-    <Animated.View
-      style={
-        received
-          ? [
-              styles.container,
-              { opacity: fadeOpacity, bottom: fadeBottom, left: fadeBottom },
-            ]
-          : [
-              {
-                ...styles.container,
-                backgroundColor: colors.blue_secondary,
-                paddingRight: 16,
-              },
-              { opacity: fadeOpacity, bottom: fadeBottom, right: fadeBottom },
-            ]
-      }
-    >
-      <Text
-        style={
-          received ? styles.title : { ...styles.title, color: colors.black }
-        }
-      >
-        {title}
-      </Text>
-      {content !== undefined && content}
-    </Animated.View>
+    <>
+      {loading ? (
+        <LoadingContent />
+      ) : (
+        <Animated.View
+          style={
+            received
+              ? [
+                  styles.container,
+                  {
+                    opacity: fadeOpacity,
+                    bottom: fadeBottom,
+                    left: fadeBottom,
+                  },
+                ]
+              : [
+                  {
+                    ...styles.container,
+                    backgroundColor: colors.blue_secondary,
+                    paddingRight: 16,
+                  },
+                  {
+                    opacity: fadeOpacity,
+                    bottom: fadeBottom,
+                    right: fadeBottom,
+                  },
+                ]
+          }
+        >
+          <Text
+            style={
+              received ? styles.title : { ...styles.title, color: colors.black }
+            }
+          >
+            {title}
+          </Text>
+          {content !== undefined && content}
+        </Animated.View>
+      )}
+    </>
   );
 };
 
