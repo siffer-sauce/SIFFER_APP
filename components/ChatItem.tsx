@@ -1,7 +1,7 @@
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 import React, { FC, useEffect, useRef } from "react";
 import { colors } from "../lib/colors";
-import { LoadingContent } from "../screens/register/steps";
+import ChatLoading from "./ChatLoading";
 
 type ChatItemProps = {
   title?: string;
@@ -36,7 +36,7 @@ const ChatItem: FC<ChatItemProps> = ({ title, received, content, loading }) => {
   return (
     <>
       {loading ? (
-        <LoadingContent />
+        <ChatLoading />
       ) : (
         <Animated.View
           style={

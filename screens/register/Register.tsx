@@ -12,7 +12,6 @@ import ChatItemContainer from "../../components/ChatItemContainer";
 import {
   EmailContent,
   getStepComponents,
-  LoadingContent,
   NicknameContent,
   PasswordContent,
   PhoneNumberContent,
@@ -20,6 +19,7 @@ import {
 import { RegisterChatType } from "../../types/RegisterChatType";
 import {
   changeChatContent,
+  changeChatTitle,
   checkIsChatSended,
   getBlurPasswordString,
   setChatLoading,
@@ -35,6 +35,7 @@ const Register = () => {
   const navigation = useNavigation<StackNavigationProp<StackParams>>();
 
   const scrollRef = useRef<ScrollView>(null);
+
   const [text, setText] = useState("");
   const [step, setStep] = useState(0);
   const [modifyStep, setModifyStep] = useState("none");
@@ -59,7 +60,7 @@ const Register = () => {
   };
 
   const onTextSubmit = () => {
-    if (text.length > 0) {
+    if (text.length > 0 && modifyStep === "none") {
       let myResponse: RegisterChatType = { received: false };
       let title = "";
       let name = "";
@@ -89,16 +90,44 @@ const Register = () => {
       setText("");
       addChat(myResponse);
       setStep((prev) => prev + 1);
+    } else if (text.length > 0 && modifyStep !== "none") {
+      if (modifyStep === "emailResponse") {
+        setEmail(text);
+        setRegisterChats((prev) => changeChatTitle(prev, modifyStep, text));
+        setModifyStep("none");
+      } else if (modifyStep === "passwordResponse") {
+        setPassword(text);
+        setRegisterChats((prev) =>
+          changeChatTitle(prev, modifyStep, getBlurPasswordString(text))
+        );
+        setModifyStep("none");
+      } else if (modifyStep === "nicknameResponse") {
+        setNickname(text);
+        setRegisterChats((prev) => changeChatTitle(prev, modifyStep, text));
+        setModifyStep("none");
+      } else if (modifyStep === "phoneNumber") {
+        setPhoneNumber(text);
+        setRegisterChats((prev) => changeChatTitle(prev, modifyStep, text));
+        setModifyStep("none");
+      }
+      setText("");
     }
   };
 
   useEffect(() => {
     if (step === 1 && password === "") {
       setRegisterChats((prev) =>
-        changeChatContent(prev, "password", PasswordContent(1, text))
+        changeChatContent(
+          prev,
+          "password",
+          PasswordContent(1, text, modifyStep, () => {
+            setPassword("");
+            setModifyStep("passwordResponse");
+          })
+        )
       );
     }
-    if (step === 3) {
+    if (step === 3 && modifyStep === "none") {
       if (text.length === 4 && text[text.length - 1] !== "-") {
         const newText = text.slice(0, 3) + "-" + text.slice(3);
         setText(newText);
@@ -137,7 +166,14 @@ const Register = () => {
     }
     if (password !== "") {
       setRegisterChats((prev) =>
-        changeChatContent(prev, "password", PasswordContent(step, password))
+        changeChatContent(
+          prev,
+          "password",
+          PasswordContent(step, password, modifyStep, () => {
+            setPassword("");
+            setModifyStep("passwordResponse");
+          })
+        )
       );
     }
     if (nickname !== "") {
@@ -146,7 +182,8 @@ const Register = () => {
           prev,
           "nickname",
           NicknameContent(() => {
-            console.log("hi");
+            setNickname("");
+            setModifyStep("nicknameResponse");
           })
         )
       );
@@ -157,7 +194,8 @@ const Register = () => {
           prev,
           "phoneNumber",
           PhoneNumberContent(() => {
-            console.log("hi");
+            setPhoneNumber("");
+            setModifyStep("phoneNumberResponse");
           })
         )
       );
@@ -203,6 +241,7 @@ const Register = () => {
           setText={setText}
           onTextSubmit={onTextSubmit}
           step={step}
+          modifyStep={modifyStep}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

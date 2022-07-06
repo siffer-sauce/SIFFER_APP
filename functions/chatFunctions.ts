@@ -1,3 +1,4 @@
+import { KeyboardTypeOptions } from "react-native";
 import { RegisterChatType } from "../types/RegisterChatType";
 
 export const changeChatContent = (
@@ -26,6 +27,22 @@ export const setChatLoading = (chats: Array<RegisterChatType>, key: string) => {
   );
 };
 
+export const changeChatTitle = (
+  chats: Array<RegisterChatType>,
+  key: string,
+  title: string
+) => {
+  return chats.map((chat) =>
+    chat.name === key
+      ? {
+          ...chat,
+          title,
+          loading: false,
+        }
+      : chat
+  );
+};
+
 export const checkIsChatSended = (
   chats: Array<RegisterChatType>,
   stepNumber: number
@@ -46,20 +63,40 @@ export const checkIsChatSended = (
   }
 };
 
-export const getPlaceholder = (stepNumber: number): string => {
-  switch (stepNumber) {
-    case 0:
-      return "12345678@siffer.co.kr";
-    case 1:
-      return "Siffer1234!!";
-    case 2:
-      return "씨퍼 (2글자 이상 작성해주세요.)";
-    case 3:
-      return "'-'없이 입력해주세요.";
-    case 4:
-      return "123456";
-    default:
-      return "";
+export const getPlaceholder = (
+  stepNumber: number,
+  modifyStep: string
+): string => {
+  if (modifyStep === "none") {
+    switch (stepNumber) {
+      case 0:
+        return "12345678@siffer.co.kr";
+      case 1:
+        return "Siffer1234!!";
+      case 2:
+        return "씨퍼 (2글자 이상 작성해주세요.)";
+      case 3:
+        return "'-'없이 입력해주세요.";
+      case 4:
+        return "123456";
+      default:
+        return "";
+    }
+  } else {
+    switch (modifyStep) {
+      case "emailResponse":
+        return "12345678@siffer.co.kr";
+      case "passwordResponse":
+        return "Siffer1234!!";
+      case "nicknameResponse":
+        return "씨퍼 (2글자 이상 작성해주세요.)";
+      case "phoneNumberResponse":
+        return "'-'없이 입력해주세요.";
+      case "verificationCodeResponse":
+        return "123456";
+      default:
+        return "";
+    }
   }
 };
 
@@ -109,4 +146,31 @@ export function getBlurPasswordString(password: string): string {
     output += "⦁";
   }
   return output;
+}
+
+export function getKeyBoardType(
+  step: number,
+  modifyStep: string
+): KeyboardTypeOptions | undefined {
+  if (modifyStep === "none") {
+    if (step === 0) {
+      return "email-address";
+    } else if (step === 3) {
+      return "numeric";
+    } else if (step === 4) {
+      return "numeric";
+    } else {
+      return undefined;
+    }
+  } else {
+    if (modifyStep === "emailResponse") {
+      return "email-address";
+    } else if (modifyStep === "phoneNumber") {
+      return "numeric";
+    } else if (modifyStep === "verificationCode") {
+      return "numeric";
+    } else {
+      return undefined;
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import {
+  InteractionManager,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -11,11 +12,13 @@ import React, {
   RefObject,
   SetStateAction,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
   checkIsEmailValidated,
   checkIsPasswordValidated,
+  getKeyBoardType,
   getPlaceholder,
 } from "../functions/chatFunctions";
 import { colors } from "../lib/colors";
@@ -28,6 +31,7 @@ type ChatTextInputProps = {
   setText: Dispatch<SetStateAction<string>>;
   onTextSubmit: () => void;
   scrollRef: RefObject<ScrollView>;
+  modifyStep: string;
 };
 
 const ChatTextInput: FC<ChatTextInputProps> = ({
@@ -36,51 +40,80 @@ const ChatTextInput: FC<ChatTextInputProps> = ({
   setText,
   onTextSubmit,
   scrollRef,
+  modifyStep,
 }) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    if (step === 0 && checkIsEmailValidated(text)) {
-      setButtonDisabled(false);
-    } else if (step === 1 && checkIsPasswordValidated(text)) {
-      setButtonDisabled(false);
-    } else if (step === 2 && text.length > 1) {
-      setButtonDisabled(false);
-    } else if (step === 3 && text.length === 13) {
-      setButtonDisabled(false);
-    } else if (step === 4 && text.length === 6) {
-      setButtonDisabled(false);
+    InteractionManager.runAfterInteractions(() => {
+      inputRef.current?.focus();
+    });
+  }, []);
+
+  useEffect(() => {
+    if (modifyStep === "none") {
+      if (step === 0 && checkIsEmailValidated(text)) {
+        setButtonDisabled(false);
+      } else if (step === 1 && checkIsPasswordValidated(text)) {
+        setButtonDisabled(false);
+      } else if (step === 2 && text.length > 1) {
+        setButtonDisabled(false);
+      } else if (step === 3 && text.length === 13) {
+        setButtonDisabled(false);
+      } else if (step === 4 && text.length === 6) {
+        setButtonDisabled(false);
+      } else {
+        setButtonDisabled(true);
+      }
     } else {
-      setButtonDisabled(true);
+      if (modifyStep === "emailResponse" && checkIsEmailValidated(text)) {
+        setButtonDisabled(false);
+      } else if (
+        modifyStep === "passwordResponse" &&
+        checkIsPasswordValidated(text)
+      ) {
+        setButtonDisabled(false);
+      } else if (modifyStep === "nicknameResponse" && text.length > 1) {
+        setButtonDisabled(false);
+      } else if (modifyStep === "phoneNumberResponse" && text.length === 13) {
+        setButtonDisabled(false);
+      } else if (
+        modifyStep === "verificationCodeResponse" &&
+        text.length === 6
+      ) {
+        setButtonDisabled(false);
+      } else {
+        setButtonDisabled(true);
+      }
     }
   }, [step, text]);
 
   return (
     <View style={styles.footer}>
       <TextInput
-        autoFocus={true}
+        ref={inputRef}
         style={styles.textInput}
-        placeholder={getPlaceholder(step)}
+        placeholder={getPlaceholder(step, modifyStep)}
         autoCapitalize="none"
         placeholderTextColor={colors.gray}
-        keyboardType={
-          step === 0
-            ? "email-address"
-            : step === 3
-            ? "numeric"
-            : step === 4
-            ? "numeric"
-            : undefined
-        }
+        keyboardType={getKeyBoardType(step, modifyStep)}
         value={text}
         onChangeText={setText}
         onSubmitEditing={buttonDisabled ? undefined : onTextSubmit}
         onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
-        secureTextEntry={step === 1 && !passwordVisible ? true : false}
-        maxLength={step === 3 ? 13 : undefined}
+        secureTextEntry={
+          ((step === 1 && modifyStep === "none") ||
+            modifyStep === "passwordResponse") &&
+          !passwordVisible
+            ? true
+            : false
+        }
+        maxLength={step === 3 ? 13 : step === 4 ? 6 : undefined}
       />
-      {step === 1 && (
+      {((step === 1 && modifyStep === "none") ||
+        modifyStep === "passwordResponse") && (
         <TouchableOpacity
           onPress={() => setPasswordVisible((prev) => !prev)}
           style={{ marginRight: 10 }}
@@ -92,14 +125,16 @@ const ChatTextInput: FC<ChatTextInputProps> = ({
           />
         </TouchableOpacity>
       )}
-      {step === 2 && !buttonDisabled && (
-        <AntDesign
-          name="check"
-          size={24}
-          color={colors.green}
-          style={{ marginRight: 10 }}
-        />
-      )}
+      {((step === 2 && modifyStep === "none") ||
+        modifyStep === "nicknameResponse") &&
+        !buttonDisabled && (
+          <AntDesign
+            name="check"
+            size={24}
+            color={colors.green}
+            style={{ marginRight: 10 }}
+          />
+        )}
       <TouchableOpacity onPress={onTextSubmit} disabled={buttonDisabled}>
         <AntDesign
           name="arrowup"

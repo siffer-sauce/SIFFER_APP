@@ -103,7 +103,12 @@ export const EmailContent = (onPress: () => void) => {
   );
 };
 
-export const PasswordContent = (step: number, password: string) => {
+export const PasswordContent = (
+  step: number,
+  password: string,
+  modifyStep: string,
+  onPress: () => void
+) => {
   let upperTest = false;
   let numTest = false;
   let specialTest = false;
@@ -112,23 +117,24 @@ export const PasswordContent = (step: number, password: string) => {
   const Normal = /[a-z]/;
   const Num = /[0-9]/;
   const Special = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
+  if (modifyStep === "none" || modifyStep === "passwordResponse") {
+    if (Upper.test(password) && Normal.test(password) && password.length > 7) {
+      upperTest = true;
+    } else {
+      upperTest = false;
+    }
 
-  if (Upper.test(password) && Normal.test(password) && password.length > 7) {
-    upperTest = true;
-  } else {
-    upperTest = false;
-  }
+    if (Num.test(password)) {
+      numTest = true;
+    } else {
+      numTest = false;
+    }
 
-  if (Num.test(password)) {
-    numTest = true;
-  } else {
-    numTest = false;
-  }
-
-  if (Special.test(password)) {
-    specialTest = true;
-  } else {
-    specialTest = false;
+    if (Special.test(password)) {
+      specialTest = true;
+    } else {
+      specialTest = false;
+    }
   }
 
   return (
@@ -140,6 +146,7 @@ export const PasswordContent = (step: number, password: string) => {
             alignItems: "center",
             marginTop: 8,
           }}
+          onPress={onPress}
         >
           <Text style={{ color: colors.blue_secondary, marginRight: 4 }}>
             비밀번호 재입력
@@ -256,38 +263,3 @@ export const VerificationCodeContent: FC<ContentProps> = ({ onPress }) => {
     </View>
   );
 };
-
-export const LoadingContent = () => {
-  const animatedValue = useRef(new Animated.Value(0)).current;
-
-  const fadeIn = Animated.timing(animatedValue, {
-    toValue: 1,
-    duration: 250,
-    useNativeDriver: false,
-    easing: Easing.bounce,
-  });
-  useEffect(() => {
-    Animated.loop(fadeIn, { iterations: -1 });
-  }, []);
-  return (
-    <View style={styles.container}>
-      <Animated.Text
-        style={[{ color: colors.black }, { fontSize: animatedValue }]}
-      >
-        ⦁
-      </Animated.Text>
-      <Animated.Text>⦁</Animated.Text>
-      <Animated.Text>⦁</Animated.Text>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.blue_secondary,
-    paddingHorizontal: 32,
-    paddingVertical: 22,
-    borderRadius: 16,
-    flexDirection: "row",
-  },
-});
