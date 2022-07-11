@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Render3D from "./screens/Render3D";
 import Register from "./screens/register/Register";
+import BottomTabs from "./screens/BottomTabs/BottomTabs";
 const Stack = createStackNavigator();
 
 export type StackParams = {
@@ -14,6 +15,7 @@ const Navigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="BottomTabs" component={BottomTabs} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Render3D" component={Render3D} />
       </Stack.Navigator>

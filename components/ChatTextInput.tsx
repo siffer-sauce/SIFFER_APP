@@ -91,58 +91,60 @@ const ChatTextInput: FC<ChatTextInputProps> = ({
   }, [step, text]);
 
   return (
-    <View style={styles.footer}>
-      <TextInput
-        ref={inputRef}
-        style={styles.textInput}
-        placeholder={getPlaceholder(step, modifyStep)}
-        autoCapitalize="none"
-        placeholderTextColor={colors.gray}
-        keyboardType={getKeyBoardType(step, modifyStep)}
-        value={text}
-        onChangeText={setText}
-        onSubmitEditing={buttonDisabled ? undefined : onTextSubmit}
-        onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
-        secureTextEntry={
-          ((step === 1 && modifyStep === "none") ||
-            modifyStep === "passwordResponse") &&
-          !passwordVisible
-            ? true
-            : false
-        }
-        maxLength={step === 3 ? 13 : step === 4 ? 6 : undefined}
-      />
-      {((step === 1 && modifyStep === "none") ||
-        modifyStep === "passwordResponse") && (
-        <TouchableOpacity
-          onPress={() => setPasswordVisible((prev) => !prev)}
-          style={{ marginRight: 10 }}
-        >
-          <Feather
-            name={passwordVisible ? "eye" : "eye-off"}
+    <>
+      <View style={styles.footer}>
+        <TextInput
+          ref={inputRef}
+          style={styles.textInput}
+          placeholder={getPlaceholder(step, modifyStep)}
+          autoCapitalize="none"
+          placeholderTextColor={colors.gray}
+          keyboardType={getKeyBoardType(step, modifyStep)}
+          value={text}
+          onChangeText={setText}
+          onSubmitEditing={buttonDisabled ? undefined : onTextSubmit}
+          onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
+          secureTextEntry={
+            ((step === 1 && modifyStep === "none") ||
+              modifyStep === "passwordResponse") &&
+            !passwordVisible
+              ? true
+              : false
+          }
+          maxLength={step === 3 ? 13 : step === 4 ? 6 : undefined}
+        />
+        {((step === 1 && modifyStep === "none") ||
+          modifyStep === "passwordResponse") && (
+          <TouchableOpacity
+            onPress={() => setPasswordVisible((prev) => !prev)}
+            style={{ marginRight: 10 }}
+          >
+            <Feather
+              name={passwordVisible ? "eye" : "eye-off"}
+              size={24}
+              color={colors.gray}
+            />
+          </TouchableOpacity>
+        )}
+        {((step === 2 && modifyStep === "none") ||
+          modifyStep === "nicknameResponse") &&
+          !buttonDisabled && (
+            <AntDesign
+              name="check"
+              size={24}
+              color={colors.green}
+              style={{ marginRight: 10 }}
+            />
+          )}
+        <TouchableOpacity onPress={onTextSubmit} disabled={buttonDisabled}>
+          <AntDesign
+            name="arrowup"
             size={24}
-            color={colors.gray}
+            color={buttonDisabled ? colors.gray : colors.white}
           />
         </TouchableOpacity>
-      )}
-      {((step === 2 && modifyStep === "none") ||
-        modifyStep === "nicknameResponse") &&
-        !buttonDisabled && (
-          <AntDesign
-            name="check"
-            size={24}
-            color={colors.green}
-            style={{ marginRight: 10 }}
-          />
-        )}
-      <TouchableOpacity onPress={onTextSubmit} disabled={buttonDisabled}>
-        <AntDesign
-          name="arrowup"
-          size={24}
-          color={buttonDisabled ? colors.gray : colors.white}
-        />
-      </TouchableOpacity>
-    </View>
+      </View>
+    </>
   );
 };
 
