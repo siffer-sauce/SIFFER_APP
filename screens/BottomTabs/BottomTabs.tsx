@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { TouchableOpacity, View } from "react-native";
 import { colors } from "../../lib/colors";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Home from "./Home";
 import Recommendation from "./Recommendation";
 import Search from "./Search";
@@ -13,11 +13,18 @@ import MyIcon from "../../components/icons/MyIcon";
 import RecommendationIcon from "../../components/icons/RecommendationIcon";
 import SearchIcon from "../../components/icons/SearchIcon";
 import BottomTabIcon from "../../components/BottomTabIcon";
+import { StackParams } from "../../Navigation";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParams } from "../RootStackParams";
 
 const Tab = createBottomTabNavigator();
+type BottomTabNavigationProp = StackNavigationProp<
+  RootStackParams,
+  "BottomTabs"
+>;
 
 function BottomTabs() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<BottomTabNavigationProp>();
   return (
     <Tab.Navigator
       screenOptions={{

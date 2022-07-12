@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import Render3D from "./screens/Render3D";
 import Register from "./screens/register/Register";
 import BottomTabs from "./screens/BottomTabs/BottomTabs";
+import Settings from "./screens/Settings";
 const Stack = createStackNavigator();
 
 export type StackParams = {
@@ -18,6 +19,7 @@ const Navigation = () => {
         <Stack.Screen name="BottomTabs" component={BottomTabs} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Render3D" component={Render3D} />
+        <Stack.Screen name="Settings" component={Settings} />
       </Stack.Navigator>
     </NavigationContainer>
   );

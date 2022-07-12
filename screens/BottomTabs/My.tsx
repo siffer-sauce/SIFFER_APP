@@ -11,11 +11,18 @@ import { colors } from "../../lib/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AnimatedButtons from "../../components/my/AnimatedButtons";
-import { NavigationProp } from "@react-navigation/native";
 import { AppleSDGothicNeoB } from "../../lib/fonts";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParams } from "../RootStackParams";
+import Basket from "../../components/my/Basket";
+
+type BottomTabNavigationProp = StackNavigationProp<
+  RootStackParams,
+  "BottomTabs"
+>;
 
 type MyProps = {
-  stackNavigation: NavigationProp<ReactNavigation.RootParamList>;
+  stackNavigation: BottomTabNavigationProp;
 };
 
 const My: FC<MyProps> = ({ stackNavigation }) => {
@@ -34,7 +41,9 @@ const My: FC<MyProps> = ({ stackNavigation }) => {
         />
         <View style={styles.headerInner}>
           <View style={styles.headerTop}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => stackNavigation.navigate("Settings")}
+            >
               <Ionicons name="settings-sharp" size={24} color="white" />
             </TouchableOpacity>
           </View>
@@ -53,6 +62,7 @@ const My: FC<MyProps> = ({ stackNavigation }) => {
         </View>
       </TouchableOpacity>
       <AnimatedButtons current={current} setCurrent={setCurrent} />
+      <Basket />
     </ScrollView>
   );
 };
