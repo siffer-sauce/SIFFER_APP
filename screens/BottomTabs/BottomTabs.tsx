@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { TouchableOpacity, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import { colors } from "../../lib/colors";
 import { useNavigation } from "@react-navigation/native";
 import Home from "./Home";
@@ -13,6 +12,7 @@ import LoungeIcon from "../../components/icons/LoungeIcon";
 import MyIcon from "../../components/icons/MyIcon";
 import RecommendationIcon from "../../components/icons/RecommendationIcon";
 import SearchIcon from "../../components/icons/SearchIcon";
+import BottomTabIcon from "../../components/BottomTabIcon";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +23,11 @@ function BottomTabs() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarStyle: { backgroundColor: colors.black, height: 100 },
+        tabBarStyle: {
+          backgroundColor: colors.black,
+          height: 100,
+          borderTopWidth: 0,
+        },
         tabBarButton: (props) => <TouchableOpacity {...props} />,
       }}
     >
@@ -32,7 +36,13 @@ function BottomTabs() {
         children={() => <Home />}
         options={{
           tabBarIcon: ({ focused }) => {
-            return <HomeIcon />;
+            return (
+              <BottomTabIcon
+                focused={focused}
+                icon={<HomeIcon color={focused ? "white" : "#818181"} />}
+                label="홈"
+              />
+            );
           },
         }}
       />
@@ -41,7 +51,15 @@ function BottomTabs() {
         children={() => <Recommendation />}
         options={{
           tabBarIcon: ({ focused }) => {
-            return <RecommendationIcon />;
+            return (
+              <BottomTabIcon
+                focused={focused}
+                icon={
+                  <RecommendationIcon color={focused ? "white" : "#818181"} />
+                }
+                label="추천"
+              />
+            );
           },
         }}
       />
@@ -59,11 +77,14 @@ function BottomTabs() {
                   alignItems: "center",
                   justifyContent: "center",
                   backgroundColor: colors.black,
-
                   borderRadius: 45,
                 }}
               >
-                <SearchIcon />
+                <BottomTabIcon
+                  focused={focused}
+                  icon={<SearchIcon color={focused ? "white" : "#818181"} />}
+                  label="검색"
+                />
               </View>
             );
           },
@@ -74,16 +95,28 @@ function BottomTabs() {
         children={() => <Lounge />}
         options={{
           tabBarIcon: ({ focused }) => {
-            return <LoungeIcon />;
+            return (
+              <BottomTabIcon
+                focused={focused}
+                icon={<LoungeIcon color={focused ? "white" : "#818181"} />}
+                label="라운지"
+              />
+            );
           },
         }}
       />
       <Tab.Screen
         name="My"
-        component={My}
+        children={() => <My stackNavigation={navigation} />}
         options={{
           tabBarIcon: ({ focused }) => {
-            return <MyIcon />;
+            return (
+              <BottomTabIcon
+                focused={focused}
+                icon={<MyIcon color={focused ? "white" : "#818181"} />}
+                label="마이"
+              />
+            );
           },
         }}
       />

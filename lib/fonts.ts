@@ -1,0 +1,9 @@
+export const AppleSDGothicNeoB = "AppleSDGothicNeoB";
+export const AppleSDGothicNeoEB = "AppleSDGothicNeoEB";
+export const AppleSDGothicNeoH = "AppleSDGothicNeoH";
+export const AppleSDGothicNeoL = "AppleSDGothicNeoL";
+export const AppleSDGothicNeoM = "AppleSDGothicNeoM";
+export const AppleSDGothicNeoR = "AppleSDGothicNeoR";
+export const AppleSDGothicNeoSB = "AppleSDGothicNeoSB";
+export const AppleSDGothicNeoT = "AppleSDGothicNeoT";
+export const AppleSDGothicNeoUL = "AppleSDGothicNeoUL";
