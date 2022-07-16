@@ -15,6 +15,7 @@ import { AppleSDGothicNeoB } from "../../lib/fonts";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParams } from "../RootStackParams";
 import Basket from "../../components/my/Basket";
+import MySize from "../../components/my/MySize";
 
 type BottomTabNavigationProp = StackNavigationProp<
   RootStackParams,
@@ -62,7 +63,7 @@ const My: FC<MyProps> = ({ stackNavigation }) => {
         </View>
       </TouchableOpacity>
       <AnimatedButtons current={current} setCurrent={setCurrent} />
-      {current === "basket" && <Basket />}
+      {current === "mySize" ? <MySize /> : current === "basket" && <Basket />}
     </ScrollView>
   );
 };
