@@ -24,7 +24,7 @@ const AnimatedButtons: FC<AnimatedButtonsProps> = ({ current, setCurrent }) => {
   const moveBar = (steps: number) => {
     Animated.timing(barLeftPosition, {
       toValue: barWidth * steps,
-      duration: 200,
+      duration: 250,
       useNativeDriver: false,
       easing: Easing.ease,
     }).start();
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   buttonTextSelected: {
     color: "white",
     fontFamily: AppleSDGothicNeoB,
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "500",
   },
   buttonContainer: {
@@ -128,5 +128,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 2,
     width: barWidth,
+    borderRadius: 100,
   },
 });

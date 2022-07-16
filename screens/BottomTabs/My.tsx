@@ -62,7 +62,7 @@ const My: FC<MyProps> = ({ stackNavigation }) => {
         </View>
       </TouchableOpacity>
       <AnimatedButtons current={current} setCurrent={setCurrent} />
-      <Basket />
+      {current === "basket" && <Basket />}
     </ScrollView>
   );
 };

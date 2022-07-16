@@ -51,7 +51,7 @@ const BasketItem: FC<BasketItemProps> = ({
       />
       <LinearGradient
         // Background Linear Gradient
-        colors={["transparent", "rgba(0,0,0,0.8)"]}
+        colors={["transparent", "transparent", "rgba(0,0,0,0.7)"]}
         style={{
           position: "absolute",
           width: WIDTH,
@@ -66,7 +66,10 @@ const BasketItem: FC<BasketItemProps> = ({
         <Text style={styles.category}>{category}</Text>
       </LinearGradient>
       {modifyMode && (
-        <CheckIcon style={{ position: "absolute", right: 0 }} isChecked />
+        <CheckIcon
+          style={{ position: "absolute", right: 0 }}
+          isChecked={selected}
+        />
       )}
     </TouchableOpacity>
   );

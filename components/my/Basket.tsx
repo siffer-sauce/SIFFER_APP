@@ -10,6 +10,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import BasketItem from "./BasketItem";
 
 type ProductType = {
+  id: number;
   photoUrl: string;
   price: string;
   category: string;
@@ -18,6 +19,7 @@ type ProductType = {
 
 const DATA: Array<ProductType> = [
   {
+    id: 1,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -25,6 +27,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 2,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -32,6 +35,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 3,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -39,6 +43,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 4,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -46,6 +51,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 5,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -53,6 +59,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 6,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -60,6 +67,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 7,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -67,6 +75,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 8,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -74,6 +83,7 @@ const DATA: Array<ProductType> = [
     category: "올디너리",
   },
   {
+    id: 9,
     photoUrl:
       "https://cdn-images.farfetch-contents.com/18/03/85/10/18038510_40443069_1000.jpg",
     price: "58,000",
@@ -84,19 +94,47 @@ const DATA: Array<ProductType> = [
 
 const Basket = () => {
   const [modifyMode, setModifyMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Array<ProductType>>([]);
   return (
     <View style={styles.container}>
       <Text style={styles.lightText}>최근 업데이트 06:03</Text>
       <Text style={styles.boldText}>관심 아이템</Text>
       <View style={styles.menu}>
         <Text style={styles.semiBoldText}>Wish Item</Text>
-        <TouchableOpacity
-          onPress={() => {
-            setModifyMode((prev) => !prev);
-          }}
-        >
-          <Text style={styles.buttonText}>편집하기</Text>
-        </TouchableOpacity>
+        {modifyMode ? (
+          <View style={{ flexDirection: "row" }}>
+            {selectedItems.length === DATA.length ? (
+              <TouchableOpacity onPress={() => setSelectedItems([])}>
+                <Text style={{ ...styles.buttonText, marginRight: 20 }}>
+                  전체 선택 취소
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => setSelectedItems(DATA)}>
+                <Text style={{ ...styles.buttonText, marginRight: 20 }}>
+                  전체 선택
+                </Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                setModifyMode((prev) => !prev);
+                setSelectedItems([]);
+              }}
+            >
+              <Text style={styles.buttonText}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setModifyMode((prev) => !prev);
+              setSelectedItems([]);
+            }}
+          >
+            <Text style={styles.buttonText}>편집하기</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.listContainer}>
         {DATA.map((item, i) => {
@@ -108,9 +146,19 @@ const Basket = () => {
               productName={item.productName}
               category={item.category}
               modifyMode={modifyMode}
-              selected={true}
+              selected={
+                selectedItems.filter((elm) => elm.id === item.id).length > 0
+              }
               onPress={() => {
-                setModifyMode((prev) => !prev);
+                if (
+                  selectedItems.filter((elm) => elm.id === item.id).length > 0
+                ) {
+                  setSelectedItems((prev) =>
+                    prev.filter((elm) => elm.id !== item.id)
+                  );
+                } else {
+                  setSelectedItems((prev) => [...prev, item]);
+                }
               }}
             />
           );
