@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     width: Dimensions.get("screen").width,
     paddingBottom: 100,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "flex-start",
   },
 });

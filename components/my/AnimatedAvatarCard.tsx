@@ -16,6 +16,8 @@ const AnimatedAvatarCard: FC = () => {
   const imageWidthValue = useRef(new Animated.Value(0)).current;
   const imageHeightValue = useRef(new Animated.Value(0)).current;
 
+  const blurRadius = useRef(new Animated.Value(3)).current;
+
   const fadeIn = () => {
     Animated.timing(viewWidthValue, {
       toValue: WIDTH,
@@ -34,6 +36,11 @@ const AnimatedAvatarCard: FC = () => {
     }).start();
     Animated.timing(imageHeightValue, {
       toValue: IMAGE_HEIGHT,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+    Animated.timing(blurRadius, {
+      toValue: 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -62,6 +69,7 @@ const AnimatedAvatarCard: FC = () => {
           <Animated.Image
             source={Avatar3D}
             style={[{ width: imageWidthValue, height: imageHeightValue }]}
+            blurRadius={blurRadius}
           />
         </LinearGradient>
       </Animated.View>
