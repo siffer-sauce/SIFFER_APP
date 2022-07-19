@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { FC } from "react";
 import Avatar3D from "../../assets/images/Avatar3D.png";
 import { LinearGradient } from "expo-linear-gradient";
 import ExpandIcon from "../icons/ExpandIcon";
@@ -14,7 +14,11 @@ import ExpandIcon from "../icons/ExpandIcon";
 const WIDTH = Dimensions.get("screen").width;
 const HEIGHT = (WIDTH * 505) / 369;
 
-const AvatarCard = () => {
+type AvatarCardProps = {
+  onPress?: () => void;
+};
+
+const AvatarCard: FC<AvatarCardProps> = ({ onPress }) => {
   return (
     <View style={{ position: "relative", alignItems: "center", marginTop: 20 }}>
       <LinearGradient
@@ -29,11 +33,14 @@ const AvatarCard = () => {
         }}
       >
         <Image source={Avatar3D} />
-        <TouchableOpacity
-          style={{ position: "absolute", bottom: 20, right: 16 }}
-        >
-          <ExpandIcon />
-        </TouchableOpacity>
+        {onPress !== undefined && (
+          <TouchableOpacity
+            style={{ position: "absolute", bottom: 20, right: 16 }}
+            onPress={onPress}
+          >
+            <ExpandIcon />
+          </TouchableOpacity>
+        )}
       </LinearGradient>
     </View>
   );

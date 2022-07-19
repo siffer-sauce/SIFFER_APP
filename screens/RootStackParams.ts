@@ -3,4 +3,5 @@ export type RootStackParams = {
   Register: undefined;
   Render3d: undefined;
   Settings: undefined;
+  MySizeModal: undefined;
 };

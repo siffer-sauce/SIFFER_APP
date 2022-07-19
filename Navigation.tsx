@@ -6,6 +6,7 @@ import Render3D from "./screens/Render3D";
 import Register from "./screens/register/Register";
 import BottomTabs from "./screens/BottomTabs/BottomTabs";
 import Settings from "./screens/Settings";
+import MySizeModal from "./screens/BottomTabs/MySizeModal";
 const Stack = createStackNavigator();
 
 export type StackParams = {
@@ -20,6 +21,14 @@ const Navigation = () => {
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Render3D" component={Render3D} />
         <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen
+          name="MySizeModal"
+          component={MySizeModal}
+          options={{
+            presentation: "transparentModal",
+            animationEnabled: true,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

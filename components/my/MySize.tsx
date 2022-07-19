@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { FC } from "react";
 import { colors } from "../../lib/colors";
 import Avatar3D from "../../assets/images/Avatar3D.png";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,11 +19,21 @@ import {
 import AvatarCard from "./AvatarCard";
 import AnalysisCard from "./AnalysisCard";
 import ModalFromBottom from "../ModalFromBottom";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParams } from "../../screens/RootStackParams";
 
 const WIDTH = Dimensions.get("screen").width - 20;
 const HEIGHT = (WIDTH * 250) / 185;
 
-const MySize = () => {
+type BottomTabNavigationProp = StackNavigationProp<
+  RootStackParams,
+  "BottomTabs"
+>;
+type MySizeProps = {
+  stackNavigation: BottomTabNavigationProp;
+};
+
+const MySize: FC<MySizeProps> = ({ stackNavigation }) => {
   return (
     <>
       {/* <ModalFromBottom /> */}
@@ -37,7 +47,7 @@ const MySize = () => {
               <Text style={styles.buttonText}>편집하기</Text>
             </TouchableOpacity>
           </View>
-          <AvatarCard />
+          <AvatarCard onPress={() => stackNavigation.navigate("MySizeModal")} />
         </View>
         <View style={{ marginVertical: 40 }}>
           <Text style={styles.lightText}>

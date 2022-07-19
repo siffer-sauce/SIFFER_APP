@@ -116,14 +116,25 @@ const Basket = () => {
                 </Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              onPress={() => {
-                setModifyMode((prev) => !prev);
-                setSelectedItems([]);
-              }}
-            >
-              <Text style={styles.buttonText}>취소</Text>
-            </TouchableOpacity>
+            {selectedItems.length === 0 ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setModifyMode((prev) => !prev);
+                  setSelectedItems([]);
+                }}
+              >
+                <Text style={styles.buttonText}>취소</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  setModifyMode((prev) => !prev);
+                  setSelectedItems([]);
+                }}
+              >
+                <Text style={styles.buttonText}>삭제</Text>
+              </TouchableOpacity>
+            )}
           </View>
         ) : (
           <TouchableOpacity
