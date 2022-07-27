@@ -34,6 +34,7 @@ const My: FC<MyProps> = ({ stackNavigation }) => {
         backgroundColor: colors.black,
         minHeight: Dimensions.get("screen").height,
       }}
+      showsVerticalScrollIndicator={false}
     >
       <View style={styles.header}>
         <Image
